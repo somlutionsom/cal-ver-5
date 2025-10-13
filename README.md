@@ -3,7 +3,7 @@
 Notion 데이터베이스와 연동하여 사용할 수 있는 심플하고 깔끔한 캘린더 위젯입니다.
 
 ## 저장소 정보
-- **GitHub URL**: https://github.com/somlutionsom/CALver4
+- **GitHub URL**: https://github.com/somlutionsom/cal-ver-5
 - **배포 URL**: [Vercel 배포 예정]
 - **프로젝트 유형**: 웹앱 (Notion DB 연동 캘린더 위젯)
 
