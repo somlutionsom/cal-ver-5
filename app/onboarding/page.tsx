@@ -830,7 +830,7 @@ export default function OnboardingPage() {
                 onChange={(e) => handleInputChange('importantProperty', e.target.value)}
               />
               <p className="help-text">
-                Select 타입 속성에서 "중요" 옵션이 선택된 날짜를 강조합니다
+                Select 타입 속성에서 &quot;중요&quot; 옵션이 선택된 날짜를 강조합니다
               </p>
             </div>
             
