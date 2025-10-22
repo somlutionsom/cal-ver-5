@@ -93,12 +93,13 @@ export async function POST(request: NextRequest) {
       dbId: widgetConfig.notionConfig.databaseId,
       dateProp: widgetConfig.notionConfig.dateProperty,
       titleProp: widgetConfig.notionConfig.titleProperty,
-      scheduleProps: widgetConfig.notionConfig.scheduleProperties,
+      scheduleProps: widgetConfig.notionConfig.scheduleProperties, // optional
       importantProp: widgetConfig.notionConfig.importantProperty,
       primaryColor: theme.primaryColor,
       accentColor: theme.accentColor,
       importantColor: theme.importantColor,
       backgroundColor: theme.backgroundColor,
+      backgroundOpacity: theme.backgroundOpacity,
     };
     
     // Base64 인코딩 (URL-safe)

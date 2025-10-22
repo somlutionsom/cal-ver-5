@@ -48,7 +48,7 @@ export default function WidgetPage({ params }: PageProps) {
           databaseId: decodedData.dbId,
           dateProperty: decodedData.dateProp,
           titleProperty: decodedData.titleProp,
-          scheduleProperties: decodedData.scheduleProps,
+          scheduleProperties: decodedData.scheduleProps, // optional
           importantProperty: decodedData.importantProp,
         },
         theme: {
@@ -56,6 +56,7 @@ export default function WidgetPage({ params }: PageProps) {
           accentColor: decodedData.accentColor,
           importantColor: decodedData.importantColor,
           backgroundColor: decodedData.backgroundColor,
+          backgroundOpacity: decodedData.backgroundOpacity,
           fontFamily: 'system-ui, -apple-system, sans-serif',
         },
         createdAt: new Date().toISOString(),

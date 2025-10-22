@@ -27,7 +27,7 @@ export async function POST(request: NextRequest) {
       databaseId: config.dbId,
       dateProperty: config.dateProp,
       titleProperty: config.titleProp,
-      scheduleProperties: config.scheduleProps,
+      scheduleProperties: config.scheduleProps, // optional
       importantProperty: config.importantProp,
     };
 

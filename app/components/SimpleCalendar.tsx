@@ -273,6 +273,25 @@ export function SimpleCalendar({
   //   }
   // };
 
+  // 배경색을 투명도와 함께 처리하는 함수
+  const getBackgroundColor = () => {
+    const bgColor = theme?.backgroundColor || 'white';
+    const opacity = theme?.backgroundOpacity;
+    
+    // 투명도가 설정되어 있고 100이 아닌 경우에만 rgba로 변환
+    if (opacity !== undefined && opacity !== 100) {
+      // hex를 rgb로 변환
+      const hex = bgColor.replace('#', '');
+      const r = parseInt(hex.slice(0, 2), 16);
+      const g = parseInt(hex.slice(2, 4), 16);
+      const b = parseInt(hex.slice(4, 6), 16);
+      
+      return `rgba(${r}, ${g}, ${b}, ${opacity / 100})`;
+    }
+    
+    return bgColor;
+  };
+
   // 캘린더 날짜 생성
   const calendarDays = generateCalendarDays(year, month);
   const weekdays = getWeekdayNames(true);
@@ -286,7 +305,7 @@ export function SimpleCalendar({
       <style jsx>{`
         .calendar-widget {
           font-family: ${theme?.fontFamily || 'system-ui, -apple-system, sans-serif'};
-          background: ${theme?.backgroundColor || 'white'};
+          background: ${getBackgroundColor()};
           border-radius: 1rem;
           padding: 1rem;
           box-shadow: 0 1px 3px rgba(0, 0, 0, 0.04);
@@ -556,7 +575,7 @@ export function SimpleCalendar({
         
         @media (prefers-color-scheme: dark) {
           .calendar-widget {
-            background: ${theme?.backgroundColor || '#1a202c'};
+            background: ${getBackgroundColor()};
             color: #e2e8f0;
           }
           

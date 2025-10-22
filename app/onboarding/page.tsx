@@ -106,7 +106,6 @@ export default function OnboardingPage() {
     apiKey: '',
     dateProperty: '날짜',
     titleProperty: '제목',
-    scheduleProperties: ['일정1', '일정2', '일정3', '일정4', '일정5'],
     importantProperty: '중요',
     primaryColor: '#4A5568',
     importantColor: '#ED64A6',
@@ -127,12 +126,6 @@ export default function OnboardingPage() {
       primaryColor: theme.colors.primary,
       importantColor: theme.colors.accent,
     }));
-  };
-
-  const handleSchedulePropertyChange = (index: number, value: string) => {
-    const newProperties = [...formData.scheduleProperties];
-    newProperties[index] = value;
-    setFormData(prev => ({ ...prev, scheduleProperties: newProperties }));
   };
 
   const validateStep1 = async () => {
@@ -204,7 +197,6 @@ export default function OnboardingPage() {
         ...prev,
         dateProperty: data.data.dateProperty,
         titleProperty: data.data.titleProperty,
-        scheduleProperties: data.data.scheduleProperties,
         importantProperty: data.data.importantProperty,
       }));
       
@@ -225,10 +217,6 @@ export default function OnboardingPage() {
     }
     if (!formData.titleProperty.trim()) {
       setError('제목 속성명을 입력해주세요.');
-      return false;
-    }
-    if (formData.scheduleProperties.filter(p => p.trim()).length === 0) {
-      setError('최소 하나의 일정 속성을 입력해주세요.');
       return false;
     }
     return true;
@@ -262,7 +250,6 @@ export default function OnboardingPage() {
         dbId: formData.databaseId,
         dateProp: formData.dateProperty,
         titleProp: formData.titleProperty,
-        scheduleProps: formData.scheduleProperties.filter(p => p.trim()),
         importantProp: formData.importantProperty,
         primaryColor: formData.primaryColor,
         importantColor: formData.importantColor,
@@ -299,7 +286,6 @@ export default function OnboardingPage() {
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
           ...formData,
-          scheduleProperties: formData.scheduleProperties.filter(p => p.trim()),
           theme: {
             primaryColor: formData.primaryColor,
             importantColor: formData.importantColor,
@@ -830,20 +816,9 @@ export default function OnboardingPage() {
                 value={formData.titleProperty}
                 onChange={(e) => handleInputChange('titleProperty', e.target.value)}
               />
-            </div>
-            
-            <div className="form-group">
-              <label>일정 속성명 (최대 5개)</label>
-              {formData.scheduleProperties.map((prop, idx) => (
-                <input
-                  key={idx}
-                  type="text"
-                  value={prop}
-                  onChange={(e) => handleSchedulePropertyChange(idx, e.target.value)}
-                  placeholder={`일정${idx + 1}`}
-                  style={{ marginBottom: '0.5rem' }}
-                />
-              ))}
+              <p className="help-text">
+                Notion 페이지 제목이 캘린더 이벤트 이름으로 표시됩니다
+              </p>
             </div>
             
             <div className="form-group">
@@ -854,6 +829,9 @@ export default function OnboardingPage() {
                 value={formData.importantProperty}
                 onChange={(e) => handleInputChange('importantProperty', e.target.value)}
               />
+              <p className="help-text">
+                Select 타입 속성에서 "중요" 옵션이 선택된 날짜를 강조합니다
+              </p>
             </div>
             
             <div className="button-group">

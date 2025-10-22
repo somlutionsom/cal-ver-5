@@ -30,11 +30,9 @@ export function validateNotionConfig(data: unknown): Result<NotionConfig> {
     return { success: false, error: new Error('Title property is required') };
   }
 
-  if (!Array.isArray(config.scheduleProperties) || config.scheduleProperties.length === 0) {
-    return { success: false, error: new Error('Schedule properties are required') };
-  }
-
-  if (!config.scheduleProperties.every(isNonEmptyString)) {
+  // scheduleProperties는 optional (레거시 호환용)
+  if (config.scheduleProperties !== undefined && 
+      (!Array.isArray(config.scheduleProperties) || !config.scheduleProperties.every(isNonEmptyString))) {
     return { success: false, error: new Error('Invalid schedule properties') };
   }
 
@@ -49,7 +47,9 @@ export function validateNotionConfig(data: unknown): Result<NotionConfig> {
       apiKey: config.apiKey as string, // API key는 sanitize하지 않음
       dateProperty: sanitizeString(config.dateProperty as string),
       titleProperty: sanitizeString(config.titleProperty as string),
-      scheduleProperties: (config.scheduleProperties as string[]).map(sanitizeString),
+      scheduleProperties: Array.isArray(config.scheduleProperties) 
+        ? (config.scheduleProperties as string[]).map(sanitizeString) 
+        : undefined,
       importantProperty: sanitizeString(config.importantProperty as string),
     }
   };
