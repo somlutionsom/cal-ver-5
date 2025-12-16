@@ -46,11 +46,20 @@ export function SimpleCalendar({
 
   // 이벤트 가져오기
   const fetchEvents = useCallback(async () => {
+    console.log('[SimpleCalendar] fetchEvents 시작', {
+      configId,
+      year,
+      month,
+      hasConfig: !!config,
+      timestamp: new Date().toISOString()
+    });
+    
     setLoading(true);
     setError(null);
     
     // 미리보기 모드일 때는 샘플 데이터 표시
     if (configId === 'preview') {
+      console.log('[SimpleCalendar] 미리보기 모드 - 샘플 데이터 로드');
       const today = new Date();
       const currentYear = today.getFullYear();
       const currentMonth = today.getMonth();
@@ -129,6 +138,7 @@ export function SimpleCalendar({
       const grouped = groupEventsByDate(sampleEvents);
       setEvents(grouped);
       setLoading(false);
+      console.log('[SimpleCalendar] 샘플 데이터 로드 완료:', sampleEvents.length, '개 이벤트');
       return;
     }
     
@@ -137,6 +147,13 @@ export function SimpleCalendar({
       try {
         const startDate = formatDate(new Date(year, month, 1));
         const endDate = formatDate(new Date(year, month + 1, 0));
+        
+        console.log('[SimpleCalendar] Notion API 호출 (config prop)', {
+          startDate,
+          endDate,
+          databaseId: config.notionConfig.databaseId,
+          dateProperty: config.notionConfig.dateProperty
+        });
         
         const response = await fetch('/api/events', {
           method: 'POST',
@@ -155,20 +172,42 @@ export function SimpleCalendar({
           }),
         });
         
+        console.log('[SimpleCalendar] API 응답 상태:', response.status, response.statusText);
+        
         if (!response.ok) {
-          throw new Error('Failed to fetch events');
+          const errorText = await response.text();
+          console.error('[SimpleCalendar] API 오류 응답:', {
+            status: response.status,
+            statusText: response.statusText,
+            body: errorText
+          });
+          throw new Error(`Failed to fetch events: ${response.status} ${response.statusText}`);
         }
         
         const data = await response.json();
+        console.log('[SimpleCalendar] API 응답 데이터:', {
+          success: data.success,
+          eventCount: data.data?.length || 0,
+          error: data.error
+        });
         
         if (data.success) {
           const grouped = groupEventsByDate(data.data);
           setEvents(grouped);
+          console.log('[SimpleCalendar] 이벤트 로드 완료:', data.data.length, '개');
         } else {
+          console.warn('[SimpleCalendar] API 성공했지만 데이터 없음');
           setEvents(new Map());
         }
       } catch (err) {
-        console.error('Error fetching events:', err);
+        console.error('[SimpleCalendar] ❌ 이벤트 로드 실패:', {
+          error: err,
+          message: err instanceof Error ? err.message : String(err),
+          stack: err instanceof Error ? err.stack : undefined,
+          configId,
+          year,
+          month
+        });
         setError('일정을 불러올 수 없습니다.');
         setEvents(new Map());
       } finally {
@@ -182,24 +221,53 @@ export function SimpleCalendar({
       const startDate = formatDate(new Date(year, month, 1));
       const endDate = formatDate(new Date(year, month + 1, 0));
       
+      console.log('[SimpleCalendar] Notion API 호출 (configId)', {
+        configId,
+        startDate,
+        endDate,
+        url: `/api/events/${configId}?startDate=${startDate}&endDate=${endDate}`
+      });
+      
       const response = await fetch(
         `/api/events/${configId}?startDate=${startDate}&endDate=${endDate}`
       );
       
+      console.log('[SimpleCalendar] API 응답 상태:', response.status, response.statusText);
+      
       if (!response.ok) {
-        throw new Error('Failed to fetch events');
+        const errorText = await response.text();
+        console.error('[SimpleCalendar] API 오류 응답:', {
+          status: response.status,
+          statusText: response.statusText,
+          body: errorText
+        });
+        throw new Error(`Failed to fetch events: ${response.status} ${response.statusText}`);
       }
       
       const data = await response.json();
+      console.log('[SimpleCalendar] API 응답 데이터:', {
+        success: data.success,
+        eventCount: data.data?.length || 0,
+        error: data.error
+      });
       
       if (data.success && data.data) {
         const grouped = groupEventsByDate(data.data);
         setEvents(grouped);
+        console.log('[SimpleCalendar] 이벤트 로드 완료:', data.data.length, '개');
       } else {
+        console.warn('[SimpleCalendar] API 성공했지만 데이터 없음');
         setEvents(new Map());
       }
     } catch (err) {
-      console.error('Error fetching events:', err);
+      console.error('[SimpleCalendar] ❌ 이벤트 로드 실패:', {
+        error: err,
+        message: err instanceof Error ? err.message : String(err),
+        stack: err instanceof Error ? err.stack : undefined,
+        configId,
+        year,
+        month
+      });
       setError('일정을 불러올 수 없습니다.');
       setEvents(new Map());
     } finally {
