@@ -420,6 +420,7 @@ export function SimpleCalendar({
           padding: 4px 2px;
           gap: 4px;
           isolation: isolate;
+          color: #374151; /* 명시적 색상 - iframe 환경에서 상속 문제 방지 */
         }
         
         .calendar-day:hover {
@@ -576,7 +577,7 @@ export function SimpleCalendar({
         @media (prefers-color-scheme: dark) {
           .calendar-widget {
             background: ${getBackgroundColor()};
-            color: #e2e8f0;
+            /* color 상속 제거 - 개별 요소에서 명시적으로 설정 */
           }
           
           .month-year {
@@ -596,6 +597,11 @@ export function SimpleCalendar({
           
           .weekday {
             color: ${theme?.primaryColor || '#a0aec0'};
+          }
+          
+          /* 기본 날짜 색상 - 다크 모드에서도 어두운 색상 유지 (위젯 배경이 밝으므로) */
+          .calendar-day {
+            color: #374151;
           }
           
           .calendar-day:hover {
